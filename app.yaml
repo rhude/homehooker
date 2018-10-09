@@ -1,0 +1,20 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /.*
+  script: main.app
+
+#[START env]
+env_variables:
+    PUBSUB_TOPIC: globalevents
+    # This token is used to verify that requests originate from your
+    # application. It can be any sufficiently random string.
+    PUBSUB_VERIFICATION_TOKEN: xaew7Aesh6al3ahpaiZobeoc5xoo4Aeb8oje
+    GOOGLE_CLOUD_PROJECT: rhudethings
+    #GOOGLE_APPLICATION_CREDENTIALS: /Users/jrhude/Downloads/rhudethings-c9d6c9c285ff.json
+#[END env]
+
+libraries:
+

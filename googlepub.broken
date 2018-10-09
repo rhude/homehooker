@@ -1,0 +1,67 @@
+# Copyright 2017 Google Inc. All rights reserved.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+r"""Sample server that pushes configuration to Google Cloud IoT devices.
+
+This example represents a server that consumes telemetry data from multiple
+Cloud IoT devices. The devices report telemetry data, which the server consumes
+from a Cloud Pub/Sub topic. The server then decides whether to turn on or off
+individual devices fans.
+
+This example requires the Google Cloud Pub/Sub client library. Install it with
+
+  $ pip install --upgrade google-cloud-pubsub
+
+If you are running this example from a Compute Engine VM, you will have to
+enable the Cloud Pub/Sub API for your project, which you can do from the Cloud
+Console. Create a pubsub topic, for example
+projects/my-project-id/topics/my-topic-name, and a subscription, for example
+projects/my-project-id/subscriptions/my-topic-subscription.
+
+You can then run the example with
+
+  $ python cloudiot_pubsub_example_server.py \
+    --project_id=my-project-id \
+    --pubsub_subscription=my-topic-subscription \
+"""
+
+import googleapiclient.discovery
+import base64
+
+
+class GooglePubSub(object):
+    def __init__(self):
+
+        self.publisher = googleapiclient.discovery.build('pubsub', 'v1')
+
+    def publish(self, data):
+        data = {
+            "led_on": True,
+            "pattern": "disco"
+        }
+        data = str(data)
+        print('Data: {}'.format(data))
+        topic_path = 'projects/rhudethings/topics/globalevents'
+
+        self.publisher.projects().topics().publish(
+            topic=topic_path, body={
+                "messages": [{
+                    "data": base64.b64encode(data)
+                }]
+            }).execute()
+
+
+
+
+
+
+
